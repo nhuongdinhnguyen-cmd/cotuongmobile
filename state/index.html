@@ -1,1 +1,135 @@
+<!doctype html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#f3e6c8">
+  <title>Cờ Tướng Online</title>
+  <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">♟ CỜ TƯỚNG <span>ONLINE</span></div>
+    <div class="top-actions">
+      <button class="ghost" id="rulesBtn">Luật chơi</button>
+      <button class="ghost" id="homeBtn">Trang chủ</button>
+    </div>
+  </header>
+
+  <main class="layout">
+    <section class="setup card" id="setupPanel">
+      <h1>Chơi cờ tướng</h1>
+      <p class="muted">Chọn chế độ chơi để bắt đầu.</p>
+      <label for="playerName">Tên của bạn</label>
+      <input id="playerName" maxlength="30" placeholder="Nhập tên người chơi" value="">
+      <label for="timeChoice">Thời gian mỗi bên</label>
+      <select id="timeChoice">
+        <option value="10">10 phút</option>
+        <option value="15">15 phút</option>
+        <option value="30">30 phút</option>
+      </select>
+
+      <div class="mode-grid">
+        <button id="createRoomBtn" class="primary">Tạo phòng online</button>
+        <button id="joinRoomBtn" class="secondary">Vào phòng bằng mã</button>
+        <button id="computerBtn" class="secondary wide">Chơi với máy</button>
+      </div>
+
+      <div id="joinArea" class="hidden">
+        <label for="roomCode">Mã phòng</label>
+        <input id="roomCode" maxlength="5" placeholder="VD: A1B2C">
+        <button id="joinConfirmBtn" class="primary full">Tham gia phòng</button>
+      </div>
+
+      <div id="aiArea" class="hidden">
+        <label for="aiLevel">Cấp độ máy</label>
+        <select id="aiLevel">
+          <option value="trainee">Tập sự</option>
+          <option value="champion">Kiện tướng</option>
+          <option value="grandmaster">Đại kiện tướng</option>
+        </select>
+        <label for="humanColor">Bạn muốn cầm quân</label>
+        <select id="humanColor">
+          <option value="red">Đỏ — đi trước</option>
+          <option value="black">Đen — đi sau</option>
+        </select>
+        <button id="startAiBtn" class="primary full">Bắt đầu chơi với máy</button>
+      </div>
+      <p id="setupMessage" class="message" role="status"></p>
+    </section>
+
+    <section class="game card hidden" id="gamePanel">
+      <div class="game-head">
+        <div>
+          <div class="room-label" id="modeLabel">Chế độ chơi</div>
+          <div class="room-code" id="roomLabel"></div>
+        </div>
+        <button id="copyCodeBtn" class="ghost hidden">Sao chép mã</button>
+      </div>
+
+      <div class="playerbar blackbar">
+        <div><span class="dot blackdot"></span><span id="blackName">Đen</span></div>
+        <div class="clock" id="blackClock">10:00</div>
+      </div>
+
+      <div id="boardWrap">
+        <div class="river-label">楚 河　漢 界</div>
+        <div id="board" aria-label="Bàn cờ tướng"></div>
+      </div>
+
+      <div class="playerbar redbar">
+        <div><span class="dot reddot"></span><span id="redName">Đỏ</span></div>
+        <div class="clock" id="redClock">10:00</div>
+      </div>
+
+      <div id="status" class="status" role="status">Chờ bắt đầu...</div>
+      <div class="game-actions">
+        <button id="drawBtn" class="secondary">Cầu hòa</button>
+        <button id="resignBtn" class="danger">Xin thua</button>
+        <button id="newGameBtn" class="secondary">Ván mới</button>
+        <button id="exitBtn" class="ghost">Thoát</button>
+      </div>
+      <div class="history-box">
+        <h3>Lịch sử nước đi</h3>
+        <ol id="historyList"></ol>
+      </div>
+    </section>
+
+    <aside class="side card">
+      <h2>Hướng dẫn nhanh</h2>
+      <ul>
+        <li>Chọn quân của mình, sau đó chọn điểm đến.</li>
+        <li>Đỏ đi trước trong ván mới.</li>
+        <li>Không được để Tướng của mình bị chiếu.</li>
+        <li>Trong phòng online, gửi mã phòng cho đối thủ.</li>
+        <li>Đồng hồ bắt đầu khi cả hai người đã vào phòng.</li>
+      </ul>
+      <details id="rulesDetails">
+        <summary>Luật đi quân cơ bản</summary>
+        <p><b>Tướng:</b> đi ngang/dọc một bước trong cung.</p>
+        <p><b>Sĩ:</b> đi chéo một bước trong cung.</p>
+        <p><b>Tượng:</b> đi chéo hai điểm, không qua sông và không bị chặn mắt.</p>
+        <p><b>Mã:</b> đi hình chữ L, bị chặn nếu chân Mã bị cản.</p>
+        <p><b>Xe:</b> đi ngang/dọc, không nhảy qua quân.</p>
+        <p><b>Pháo:</b> đi như Xe; khi ăn phải nhảy qua đúng một quân làm ngòi.</p>
+        <p><b>Tốt:</b> tiến một bước; qua sông được đi ngang, không đi lùi.</p>
+      </details>
+      <p class="footnote">Bản đầu dùng phòng lưu trong bộ nhớ máy chủ. Nếu Render khởi động lại, phòng đang chơi có thể bị mất.</p>
+    </aside>
+  </main>
+
+  <dialog id="confirmDialog">
+    <form method="dialog" class="dialog-content">
+      <h2 id="dialogTitle">Xác nhận</h2>
+      <p id="dialogText"></p>
+      <div class="dialog-actions">
+        <button value="cancel" class="secondary">Hủy</button>
+        <button value="ok" id="dialogOk" class="primary">Đồng ý</button>
+      </div>
+    </form>
+  </dialog>
+  <div id="toast" class="toast" aria-live="polite"></div>
+  <script src="/game.js"></script>
+</body>
+</html>
 
