@@ -329,7 +329,7 @@ async function createRoom() {
     const res=await fetch("/api/rooms",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,time_minutes:minutes})});
     const data=await res.json();
     if(!res.ok) throw new Error(data.detail||"Không tạo được phòng.");
-    roomCode=data.code; playerId=data.player_id; serverColor=data.color;
+    roomCode=data.code; playerId=data.player_id; serverColor=data.color; myColor=serverColor;
     S=initializeState(minutes); serverStarted=false; boardInitSent=false;
     showGame("online"); connectRoom();
     setupMessage.textContent="";
@@ -344,7 +344,7 @@ async function joinRoom() {
     const res=await fetch("/api/rooms/join",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({name,code})});
     const data=await res.json();
     if(!res.ok) throw new Error(data.detail||"Không vào được phòng.");
-    roomCode=data.code; playerId=data.player_id; serverColor=data.color; boardInitSent=false;
+    roomCode=data.code; playerId=data.player_id; serverColor=data.color; myColor=serverColor; boardInitSent=false;
     S=initializeState(Number($("timeChoice").value));
     showGame("online"); connectRoom(); setupMessage.textContent="";
   } catch(e) { setupMessage.textContent="Lỗi: "+e.message; }
@@ -358,6 +358,9 @@ function connectRoom() {
     if(msg.type==="error") { showToast(msg.message); return; }
     if(msg.type==="welcome") {
       serverColor=msg.color;
+      // The online player's local color must match the color assigned by the server.
+      // Without this, the player joining as Black is incorrectly blocked from moving.
+      myColor=serverColor;
       applyServerState(msg.state);
       return;
     }
@@ -535,4 +538,3 @@ $("copyCodeBtn").addEventListener("click",async()=>{
   catch { showToast("Mã phòng: "+roomCode); }
 });
 window.addEventListener("beforeunload",()=>{if(ws) ws.close();});
-
