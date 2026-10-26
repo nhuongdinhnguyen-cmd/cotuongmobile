@@ -15,7 +15,6 @@
       <button class="ghost" id="homeBtn">Trang chủ</button>
     </div>
   </header>
-
   <main class="layout">
     <section class="setup card" id="setupPanel">
       <h1>Chơi cờ tướng</h1>
@@ -28,19 +27,16 @@
         <option value="15">15 phút</option>
         <option value="30">30 phút</option>
       </select>
-
       <div class="mode-grid">
         <button id="createRoomBtn" class="primary">Tạo phòng online</button>
         <button id="joinRoomBtn" class="secondary">Vào phòng bằng mã</button>
         <button id="computerBtn" class="secondary wide">Chơi với máy</button>
       </div>
-
       <div id="joinArea" class="hidden">
         <label for="roomCode">Mã phòng</label>
         <input id="roomCode" maxlength="5" placeholder="VD: A1B2C">
         <button id="joinConfirmBtn" class="primary full">Tham gia phòng</button>
       </div>
-
       <div id="aiArea" class="hidden">
         <label for="aiLevel">Cấp độ máy</label>
         <select id="aiLevel">
@@ -57,7 +53,6 @@
       </div>
       <p id="setupMessage" class="message" role="status"></p>
     </section>
-
     <section class="game card hidden" id="gamePanel">
       <div class="game-head">
         <div>
@@ -66,7 +61,6 @@
         </div>
         <button id="copyCodeBtn" class="ghost hidden">Sao chép mã</button>
       </div>
-
       <div class="playerbar blackbar">
         <div><span class="dot blackdot"></span><span id="blackName">Đen</span></div>
         <div class="clock" id="blackClock">10:00</div>
@@ -75,13 +69,44 @@
       <div id="boardWrap">
         <div class="river-label">楚 河　漢 界</div>
         <div id="board" aria-label="Bàn cờ tướng"></div>
+        <svg id="boardDrawing" viewBox="0 0 800 900" preserveAspectRatio="none" aria-hidden="true">
+          <g class="board-lines">
+            <!-- Các đường dọc: ngắt tại sông -->
+            <path d="
+              M44.444 45 V405 M44.444 495 V855
+              M133.333 45 V405 M133.333 495 V855
+              M222.222 45 V405 M222.222 495 V855
+              M311.111 45 V405 M311.111 495 V855
+              M400 45 V405 M400 495 V855
+              M488.889 45 V405 M488.889 495 V855
+              M577.778 45 V405 M577.778 495 V855
+              M666.667 45 V405 M666.667 495 V855
+              M755.556 45 V405 M755.556 495 V855
+            "/>
+            <!-- 10 đường ngang -->
+            <path d="
+              M44.444 45 H755.556
+              M44.444 135 H755.556
+              M44.444 225 H755.556
+              M44.444 315 H755.556
+              M44.444 405 H755.556
+              M44.444 495 H755.556
+              M44.444 585 H755.556
+              M44.444 675 H755.556
+              M44.444 765 H755.556
+              M44.444 855 H755.556
+            "/>
+            <!-- Cung tuong tren va duoi -->
+            <path d="M311.111 45 L488.889 225 M488.889 45 L311.111 225"/>
+            <path d="M311.111 675 L488.889 855 M488.889 675 L311.111 855"/>
+          </g>
+        </svg>
       </div>
 
       <div class="playerbar redbar">
         <div><span class="dot reddot"></span><span id="redName">Đỏ</span></div>
         <div class="clock" id="redClock">10:00</div>
       </div>
-
       <div id="status" class="status" role="status">Chờ bắt đầu...</div>
       <div class="game-actions">
         <button id="drawBtn" class="secondary">Cầu hòa</button>
@@ -94,7 +119,6 @@
         <ol id="historyList"></ol>
       </div>
     </section>
-
     <aside class="side card">
       <h2>Hướng dẫn nhanh</h2>
       <ul>
@@ -117,7 +141,6 @@
       <p class="footnote">Bản đầu dùng phòng lưu trong bộ nhớ máy chủ. Nếu Render khởi động lại, phòng đang chơi có thể bị mất.</p>
     </aside>
   </main>
-
   <dialog id="confirmDialog">
     <form method="dialog" class="dialog-content">
       <h2 id="dialogTitle">Xác nhận</h2>
@@ -132,4 +155,3 @@
   <script src="/game.js"></script>
 </body>
 </html>
-
