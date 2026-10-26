@@ -636,3 +636,199 @@ dialog::backdrop {
     font-size: 17px;
   }
 }
+
+/* ===== FIX CHINH XAC GIAO DIEM BAN CO ===== */
+
+/* Lưới quân và lưới đường kẻ dùng cùng hệ tọa độ */
+#board {
+  display: grid !important;
+  grid-template-columns: repeat(9, minmax(0, 1fr)) !important;
+  grid-template-rows: repeat(10, minmax(0, 1fr)) !important;
+  aspect-ratio: 8 / 9 !important;
+  position: relative;
+  isolation: isolate;
+  overflow: hidden;
+  background: #f5c46b;
+}
+
+/*
+  Vẽ đường qua tâm các ô:
+  9 cột có tâm tại 5.555%, 16.667%...94.444%
+  10 hàng có tâm tại 5%, 15%...95%
+*/
+#board::before {
+  content: "";
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  inset: 5% 5.55556%;
+
+  background-image:
+    linear-gradient(to right,
+      #49301b 1.5px, transparent 1.5px),
+    linear-gradient(to bottom,
+      #49301b 1.5px, transparent 1.5px);
+
+  background-size: 12.5% 100%, 100% 11.11111%;
+  background-repeat: repeat;
+}
+
+/* Khoảng sông */
+#board::after {
+  content: "";
+  position: absolute;
+  z-index: 1;
+  pointer-events: none;
+  left: 5.55556%;
+  right: 5.55556%;
+  top: 45%;
+  height: 10%;
+  background: #f5c46b;
+  border-top: 1.5px solid #49301b;
+  border-bottom: 1.5px solid #49301b;
+}
+
+/* Ô bấm luôn chiếm đúng một ô lưới */
+#board .cell {
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  border-radius: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 2;
+  background: transparent;
+  box-sizing: border-box;
+}
+
+/* Quân nằm chính giữa giao điểm */
+#board .piece {
+  width: 84%;
+  height: auto;
+  aspect-ratio: 1;
+  max-width: 46px;
+  max-height: 46px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0;
+  padding: 0;
+  position: relative;
+  z-index: 3;
+  box-sizing: border-box;
+  border: 2px solid currentColor;
+  border-radius: 50%;
+  outline: 1px solid #34271a;
+  outline-offset: -5px;
+  background: radial-gradient(
+    circle at 32% 25%,
+    #fffdf3,
+    #f9eacb 65%,
+    #e9cf9e
+  );
+  font-family: "Noto Serif CJK SC", "SimSun",
+    "Microsoft YaHei", serif;
+  font-size: clamp(13px, 2.8vw, 24px);
+  line-height: 1;
+  font-weight: 900;
+  pointer-events: none;
+  box-shadow: 0 2px 3px #38271940,
+    inset 0 0 0 2px #fff9e8;
+}
+
+#board .piece.red-piece {
+  color: #c51e20;
+}
+
+#board .piece.black-piece {
+  color: #171512;
+}
+
+/* ===== HAI DUONG CHEO TRONG CUNG TUONG =====
+   Lớp phủ nằm ở boardWrap, không bị render() xóa.
+*/
+#boardWrap::after {
+  content: "";
+  position: absolute;
+  z-index: 5;
+  pointer-events: none;
+
+  /* Căn đúng vùng bàn cờ bên trong viền và padding */
+  left: 11px;
+  right: 11px;
+  top: 11px;
+  bottom: 11px;
+
+  background-image:
+    linear-gradient(
+      to bottom right,
+      transparent calc(50% - 1px),
+      #49301b calc(50% - 1px),
+      #49301b calc(50% + 1px),
+      transparent calc(50% + 1px)
+    ),
+    linear-gradient(
+      to bottom left,
+      transparent calc(50% - 1px),
+      #49301b calc(50% - 1px),
+      #49301b calc(50% + 1px),
+      transparent calc(50% + 1px)
+    ),
+    linear-gradient(
+      to bottom right,
+      transparent calc(50% - 1px),
+      #49301b calc(50% - 1px),
+      #49301b calc(50% + 1px),
+      transparent calc(50% + 1px)
+    ),
+    linear-gradient(
+      to bottom left,
+      transparent calc(50% - 1px),
+      #49301b calc(50% - 1px),
+      #49301b calc(50% + 1px),
+      transparent calc(50% + 1px)
+    );
+
+  /*
+    Hai lớp đầu: cung trên.
+    Hai lớp sau: cung dưới.
+  */
+  background-size:
+    25% 22.2222%,
+    25% 22.2222%,
+    25% 22.2222%,
+    25% 22.2222%;
+
+  background-position:
+    37.5% 0,
+    62.5% 0,
+    37.5% 100%,
+    62.5% 100%;
+
+  background-repeat: no-repeat;
+}
+
+@media (max-width: 680px) {
+  #board .piece {
+    width: 86%;
+    max-width: none;
+    max-height: none;
+    border-width: 1.5px;
+    outline-offset: -4px;
+    font-size: clamp(11px, 4vw, 22px);
+  }
+
+  #boardWrap::after {
+    left: 7px;
+    right: 7px;
+    top: 7px;
+    bottom: 7px;
+  }
+}
